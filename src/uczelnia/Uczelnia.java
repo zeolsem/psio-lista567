@@ -25,10 +25,16 @@ public class Uczelnia {
         return listaOsob;
     }
 
+    public void setListaOsob(ArrayList<Dane> dlistaOsob) {
+        listaOsob = dlistaOsob;
+    }
     public ArrayList<Dane> getListaKursow() {
         return listaKursow;
     }
 
+    public void setListaKursow(ArrayList<Dane> dListaKursow) {
+        listaKursow = dListaKursow;
+    }
     public void dodajOsobe(Osoba osoba) {
         listaOsob.add(osoba);
     }

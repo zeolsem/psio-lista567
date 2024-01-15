@@ -12,7 +12,14 @@ import java.util.stream.Collectors;
 
 public class Wyszukiwarka {
     private IWyszukiwarka strategiaWyszukiwania;
-    public Wyszukiwarka() {
+
+    //make a singleton out of this
+    private static Wyszukiwarka instance = null;
+    public static Wyszukiwarka getInstance() {
+        if (instance == null) {
+            instance = new Wyszukiwarka();
+        }
+        return instance;
     }
 
     public void zmienStrategie(IWyszukiwarka strategia) {

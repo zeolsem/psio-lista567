@@ -1,7 +1,9 @@
 package osoba;
 
 
-public abstract class Osoba extends Dane {
+import java.io.Serializable;
+
+public abstract class Osoba extends Dane implements Serializable {
     private String imie;
     private String nazwisko;
     private String pesel;

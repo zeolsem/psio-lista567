@@ -1,6 +1,8 @@
 package osoba;
 
-public class Kurs extends Dane {
+import java.io.Serializable;
+
+public class Kurs extends Dane implements Serializable {
     private String nazwa;
     private PracownikBadawczoDydaktyczny prowadzacy;
     private int punktyECTS;
