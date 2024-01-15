@@ -2,6 +2,8 @@ package uczelnia;
 import osoba.*;
 
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
 
 public class Uczelnia {
     private ArrayList<Dane> listaOsob;
@@ -57,10 +59,6 @@ public class Uczelnia {
         }
     }
 
-    public String generujTekst(String dane) {
-        return generator.generujTekst(dane);
-    }
-
     public void wyswietlWszystkieOsoby() {
         for (Dane osoba : listaOsob) {
             System.out.println(osoba);
@@ -73,4 +71,25 @@ public class Uczelnia {
         }
     }
 
+    public static void usunDuplikaty() {
+        HashSet<Integer> indexy = new HashSet<>();
+        HashSet<String> peselePracownikow = new HashSet<>();
+        ArrayList<Dane> unikatoweOsoby = new ArrayList<>();
+
+        for (Dane osoba : uczelnia.listaOsob) {
+            if (osoba instanceof Student) {
+                if (indexy.add(((Student) osoba).getNrIndeksu())) {
+                    unikatoweOsoby.add(osoba);
+                }
+            } else if (osoba instanceof PracownikUczelni) {
+                if (peselePracownikow.add(((PracownikUczelni) osoba).getPesel())) {
+                    unikatoweOsoby.add(osoba);
+                }
+            } else {
+                unikatoweOsoby.add(osoba);
+            }
+        }
+
+        uczelnia.setListaOsob(unikatoweOsoby);
+    }
 }

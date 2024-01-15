@@ -1,15 +1,22 @@
 package inputhandling;
 
+import com.sun.tools.javac.Main;
 import osoba.*;
+import serializacja.Serializator;
+import sortowanie.Kasownik;
+import uczelnia.GeneratorDanych;
 import uczelnia.Uczelnia;
 import wyszukiwanie.Wyszukiwarka;
 
+import java.io.IOError;
+import java.io.IOException;
 import java.util.Scanner;
 
 public class InputLoop {
     Scanner scanner;
     Wyszukiwarka wyszukiwarka;
     Uczelnia uczelnia;
+    Kasownik kasownik;
     boolean running;
     public InputLoop() {
         System.out.println("Witaj w programie do zarzadzania uczelnia\nCo chcesz zrobic?");
@@ -17,6 +24,7 @@ public class InputLoop {
         wyszukiwarka = Wyszukiwarka.getInstance();
         uczelnia = Uczelnia.getInstance();
         running = true;
+        kasownik = new Kasownik();
     }
 
     public void wyszukajPoKlasie() {
@@ -95,6 +103,7 @@ public class InputLoop {
         }
 
     }
+
 
     public void wyszukajPracownikowPoDanych() {
         System.out.println("Wyszukiwanie pracownikow po danych");
@@ -175,10 +184,16 @@ public class InputLoop {
             System.out.println("3. Wyszukaj pracownikow po danych");
             System.out.println("4. Wyszukaj kursy po danych");
             System.out.println("5. Wyjdz z programu");
+            System.out.println("6. Generuj nowe osoby");
+            System.out.println("7. Generuj nowe kursy");
+            System.out.println("8. Zapis do bazy danych");
+            System.out.println("9. Usuwanie duplikatow z bazy danych");
+            System.out.println("10. Usuwanie wpisow z bazy danych");
+            System.out.println("11. Usuwanie calej listy z bazy danych (OSTROZNIE!)");
             int choice = scanner.nextInt();
             switch (choice) {
                 case 1:
-                    System.out.println("Wyszukiwanie wszystkich studentow/pracownikow/kursy");
+                    System.out.println("Wyszukiwanie wszystkich studentow/pracownikow/kursow");
                     wyszukajPoKlasie();
                     break;
                 case 2:
@@ -194,7 +209,103 @@ public class InputLoop {
                     wyszukajKursyPoDanych();
                     break;
                 case 5:
+                    System.out.println("Do widzenia slepa Gienia");
                     running = false;
+                    break;
+                case 6:
+                    System.out.println("Generowanie nowych osób");
+                    System.out.println("1. Generuj studentow");
+                    System.out.println("2. Generuj pracownikow");
+                    System.out.println("3. Generuj wszystkie osoby");
+                    int choice2 = scanner.nextInt();
+                    System.out.println("Podaj liczbe osob do wygenerowania: ");
+                    choice = scanner.nextInt();
+                    switch (choice2) {
+                        case 1:
+                            GeneratorDanych.generujStudentow(uczelnia, choice);
+                            break;
+                        case 2:
+                            GeneratorDanych.generujPracownikow(uczelnia, choice);
+                            break;
+                        case 3:
+                            GeneratorDanych.generujOsoby(uczelnia, choice);
+                            break;
+                        default:
+                            System.out.println("hUH");
+                    }
+                    break;
+                case 7:
+                    System.out.println("Generowanie nowych kursow");
+                    System.out.println("Podaj liczbe kursow do wygenerowania: ");
+                    choice = scanner.nextInt();
+                    GeneratorDanych.generujKursy(uczelnia, choice);
+                    break;
+                case 8:
+                    System.out.println("Zapis do bazy danych");
+                    Serializator.serializujUczelnie();
+                    break;
+                case 9:
+                    System.out.println("Usuwanie duplikatow z bazy danych");
+                    uczelnia.usunDuplikaty();
+                    break;
+                case 10:
+                    System.out.println("Usuwanie wpisow z bazy danych");
+                    System.out.println("1. Usun studenta");
+                    System.out.println("2. Usun pracownika");
+                    System.out.println("3. Usun kurs");
+                    choice = scanner.nextInt();
+                    String kryterium, wartosc;
+                    switch (choice) {
+                        case 1:
+                            System.out.println("Usuwanie studenta");
+                            System.out.println("Podaj dana po ktorej usuwasz i klucz usuniecia: ");
+                            System.out.println("Mozliwe dane to: imie, nazwisko, index, rokStudiow");
+                            kryterium = scanner.next();
+                            wartosc = scanner.next();
+                            kasownik.usunStudenta(kryterium, wartosc);
+                            break;
+                        case 2:
+                            System.out.println("Usuwanie pracownika");
+                            System.out.println("Podaj dana po ktorej usuwasz i klucz usuniecia: ");
+                            System.out.println("Mozliwe dane to: imie, nazwisko, stazPracy, stanowisko");
+                            kryterium = scanner.next();
+                            wartosc = scanner.next();
+                            kasownik.usunPracownika(kryterium, wartosc);
+                            break;
+                        case 3:
+                            System.out.println("Usuwanie kursu");
+                            System.out.println("Podaj dana po ktorej usuwasz i klucz usuniecia: ");
+                            System.out.println("Mozliwe dane to: nazwa, prowadzacy (nazwisko), ects");
+                            kryterium = scanner.next();
+                            wartosc = scanner.next();
+                            kasownik.usunKurs(kryterium, wartosc);
+                            break;
+                        default:
+                            System.out.println("hUH");
+                    }
+                    break;
+                case 11:
+                    System.out.println("Usuwanie calej listy z bazy danych (OSTROZNIE!)");
+                    System.out.println("1. Usun liste studentow");
+                    System.out.println("2. Usun liste pracownikow");
+                    System.out.println("3. Usun liste kursow");
+                    choice = scanner.nextInt();
+                    switch (choice) {
+                        case 1:
+                            System.out.println("Usun liste studentow");
+                            uczelnia.getListaOsob().removeIf(osoba -> osoba instanceof Student);
+                            break;
+                        case 2:
+                            System.out.println("Usun liste pracownikow");
+                            uczelnia.getListaOsob().removeIf(osoba -> osoba instanceof PracownikUczelni);
+                            break;
+                        case 3:
+                            System.out.println("Usun liste kursow");
+                            uczelnia.getListaKursow().clear();
+                            break;
+                        default:
+                            System.out.println("hUH");
+                    }
                     break;
                 default:
                     System.out.println("hUH");
