@@ -29,6 +29,8 @@ public class Sortownik {
             case "nazwisko_i_wiek":
                 Collections.sort(listaOsob, Comparator.comparing(Osoba::getNazwisko).thenComparing(Osoba::getWiek, Comparator.reverseOrder()));
                 break;
+            default:
+                System.out.println("NIeprawdilwe kryterium");
         }
         noweDane.addAll(listaOsob);
         uczelnia.setListaOsob(noweDane);
@@ -46,6 +48,8 @@ public class Sortownik {
             case "prowadzacy_nazwisko":
                 Collections.sort(listaKursow, Comparator.comparing(kurs -> kurs.getProwadzacy().getNazwisko()));
                 break;
+            default:
+                System.out.println("NIeprawdilwe kryterium");
         }
         noweDane.addAll(listaKursow);
         uczelnia.setListaKursow(noweDane);

@@ -4,6 +4,7 @@ import com.sun.tools.javac.Main;
 import osoba.*;
 import serializacja.Serializator;
 import sortowanie.Kasownik;
+import sortowanie.Sortownik;
 import uczelnia.GeneratorDanych;
 import uczelnia.Uczelnia;
 import wyszukiwanie.Wyszukiwarka;
@@ -33,7 +34,7 @@ public class InputLoop {
         System.out.println("1. Wyszukaj studentow");
         System.out.println("2. Wyszukaj pracownikow");
         System.out.println("3. Wyszukaj kursy");
-        int choice2 = scanner.nextInt();
+        int choice2 = safeScanInt();
         switch (choice2) {
             case 1:
                 System.out.println("Wyszukiwanie studentow");
@@ -43,7 +44,7 @@ public class InputLoop {
                 System.out.println("Wyszukiwanie pracownikow");
                 System.out.println("1. Wyszukaj pracownikow administracyjnych");
                 System.out.println("2. Wyszukaj pracownikow dydaktyczno-badawczych");
-                int choice3 = scanner.nextInt();
+                int choice3 = safeScanInt();
                 switch (choice3) {
                     case 1:
                         System.out.println("Wyszukiwanie pracownikow administracyjnych");
@@ -73,7 +74,7 @@ public class InputLoop {
         System.out.println("3. Wyszukaj studentow po indexie");
         System.out.println("4. Wyszukaj studentow po roku studiow");
         System.out.println("5. Wyszukaj studentow po nazwie kursu");
-        int choice2 = scanner.nextInt();
+        int choice2 = safeScanInt();
         switch (choice2) {
             case 1:
                 System.out.println("Wyszukiwanie studentow po imieniu");
@@ -106,7 +107,6 @@ public class InputLoop {
 
     }
 
-
     public void wyszukajPracownikowPoDanych() {
         System.out.println("Wyszukiwanie pracownikow po danych");
         System.out.println("Wyszukiwanie pracownikow administracyjnych po danych");
@@ -116,7 +116,7 @@ public class InputLoop {
         System.out.println("4. Wyszukaj pracownikow administracyjnych po stanowisku");
         System.out.println("5. Wyszukaj pracownikow administracyjnych po pensji");
         System.out.println("6. Wyszukaj pracownikow administracyjnych po liczbie nadgodzin");
-        int choice2 = scanner.nextInt();
+        int choice2 = safeScanInt();
         switch (choice2) {
             case 1:
                 System.out.println("Wyszukiwanie pracownikow administracyjnych po imieniu");
@@ -157,7 +157,7 @@ public class InputLoop {
         System.out.println("1. Wyszukaj kursy po nazwie");
         System.out.println("2. Wyszukaj kursy po prowadzacym");
         System.out.println("3. Wyszukaj kursy po liczbie ects");
-        int choice2 = scanner.nextInt();
+        int choice2 = safeScanInt();
         switch (choice2) {
             case 1:
                 System.out.println("Wyszukiwanie kursow po nazwie");
@@ -179,7 +179,22 @@ public class InputLoop {
         }
     }
 
+    public int safeScanInt() throws NumberFormatException {
+        try {
+            return Integer.parseInt(scanner.nextLine());
+        } catch (NumberFormatException e) {
+            System.out.println("Zly input");
+            return 0;
+        }
+    }
+
+    public String safeScanString(){
+            String input = scanner.next();
+            return input;
+    }
+
     public void loop() {
+        Sortownik sortownik = new Sortownik();
         while (running) {
             System.out.println("1. Wyszukaj wszystkich studentow/pracownikow/kursy");
             System.out.println("2. Wyszukaj studentow po danych");
@@ -189,10 +204,10 @@ public class InputLoop {
             System.out.println("6. Generuj nowe osoby");
             System.out.println("7. Generuj nowe kursy");
             System.out.println("8. Zapis do bazy danych");
-            System.out.println("9. Usuwanie duplikatow z bazy danych");
+            System.out.println("9. Sortowanie list kursow i osob po kryterium");
             System.out.println("10. Usuwanie wpisow z bazy danych");
             System.out.println("11. Usuwanie calej listy z bazy danych (OSTROZNIE!)");
-            int choice = scanner.nextInt();
+            int choice = safeScanInt();
             switch (choice) {
                 case 1:
                     System.out.println("Wyszukiwanie wszystkich studentow/pracownikow/kursow");
@@ -219,9 +234,9 @@ public class InputLoop {
                     System.out.println("1. Generuj studentow");
                     System.out.println("2. Generuj pracownikow");
                     System.out.println("3. Generuj wszystkie osoby");
-                    int choice2 = scanner.nextInt();
+                    int choice2 = safeScanInt();
                     System.out.println("Podaj liczbe osob do wygenerowania: ");
-                    choice = scanner.nextInt();
+                    choice = safeScanInt();
                     switch (choice2) {
                         case 1:
                             GeneratorDanych.generujStudentow(uczelnia, choice);
@@ -239,7 +254,7 @@ public class InputLoop {
                 case 7:
                     System.out.println("Generowanie nowych kursow");
                     System.out.println("Podaj liczbe kursow do wygenerowania: ");
-                    choice = scanner.nextInt();
+                    choice = safeScanInt();
                     GeneratorDanych.generujKursy(uczelnia, choice);
                     break;
                 case 8:
@@ -247,39 +262,55 @@ public class InputLoop {
                     Serializator.serializujUczelnie();
                     break;
                 case 9:
-                    System.out.println("Usuwanie duplikatow z bazy danych");
-                    uczelnia.setListaOsob(uczelnia.getListaOsob());
+                    System.out.println("Wybierz ktora liste chcesz sortowac");
+                    System.out.println("1. Lista osob");
+                    System.out.println("2. Lista kursow");
+                    choice = safeScanInt();
+                    String choice3;
+                    switch (choice) {
+                        case 1:
+                            System.out.println("Podaj kryterium: 'ects', 'prowadzacy_nazwisko'");
+                            choice3 = safeScanString();
+                            sortownik.sortujListeKursow(uczelnia.getListaKursow(), choice3);
+                            break;
+                        case 2:
+                            System.out.println("Podaj kryterium: 'imie', 'nazwisko_i_imie', 'nazwisko_i_wiek'");
+                            choice3 = safeScanString();
+                            sortownik.sortujListeKursow(uczelnia.getListaKursow(), choice3);
+                            break;
+                    }
+                    System.out.println("Lista posortowana.");
                     break;
                 case 10:
                     System.out.println("Usuwanie wpisow z bazy danych");
                     System.out.println("1. Usun studenta");
                     System.out.println("2. Usun pracownika");
                     System.out.println("3. Usun kurs");
-                    choice = scanner.nextInt();
+                    choice = safeScanInt();
                     String kryterium, wartosc;
                     switch (choice) {
                         case 1:
                             System.out.println("Usuwanie studenta");
                             System.out.println("Podaj dana po ktorej usuwasz i klucz usuniecia: ");
                             System.out.println("Mozliwe dane to: imie, nazwisko, index, rokStudiow");
-                            kryterium = scanner.next();
-                            wartosc = scanner.next();
+                            kryterium = safeScanString();
+                            wartosc = safeScanString();
                             kasownik.usunStudenta(kryterium, wartosc);
                             break;
                         case 2:
                             System.out.println("Usuwanie pracownika");
                             System.out.println("Podaj dana po ktorej usuwasz i klucz usuniecia: ");
                             System.out.println("Mozliwe dane to: imie, nazwisko, stazPracy, stanowisko");
-                            kryterium = scanner.next();
-                            wartosc = scanner.next();
+                            kryterium = safeScanString();
+                            wartosc = safeScanString();
                             kasownik.usunPracownika(kryterium, wartosc);
                             break;
                         case 3:
                             System.out.println("Usuwanie kursu");
                             System.out.println("Podaj dana po ktorej usuwasz i klucz usuniecia: ");
                             System.out.println("Mozliwe dane to: nazwa, prowadzacy (nazwisko), ects");
-                            kryterium = scanner.next();
-                            wartosc = scanner.next();
+                            kryterium = safeScanString();
+                            wartosc = safeScanString();
                             kasownik.usunKurs(kryterium, wartosc);
                             break;
                         default:
@@ -291,7 +322,7 @@ public class InputLoop {
                     System.out.println("1. Usun liste studentow");
                     System.out.println("2. Usun liste pracownikow");
                     System.out.println("3. Usun liste kursow");
-                    choice = scanner.nextInt();
+                    choice = safeScanInt();
                     switch (choice) {
                         case 1:
                             System.out.println("Usun liste studentow");
