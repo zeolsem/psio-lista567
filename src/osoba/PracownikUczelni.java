@@ -29,4 +29,17 @@ public class PracownikUczelni extends Osoba {
     public String toString() {
         return super.toString() + ", Stanowisko: " + stanowisko + ", Staż pracy: " + stazPracy + " lat, Pensja: " + pensja;
     }
+
+    @Override
+    public final int hashCode() {
+        return getPesel().hashCode();
+    }
+
+    @Override
+    public final boolean equals(Object pracownikUczelniObject) {
+        if (pracownikUczelniObject instanceof PracownikUczelni) {
+            return (((PracownikUczelni) pracownikUczelniObject).getPesel()).equals(getPesel());
+        }
+        return false;
+    }
 }

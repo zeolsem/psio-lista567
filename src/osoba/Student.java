@@ -86,4 +86,17 @@ public class Student extends Osoba {
                 ", Stopień II: " + stopienII + ", Studia stacjonarne: " + studiaStacjonarne +
                 ", Studia niestacjonarne: " + studiaNiestacjonarne;
     }
+
+    @Override
+    public final int hashCode() {
+        return getNrIndeksu();
+    }
+
+    @Override
+    public final boolean equals(Object studentObject) {
+        if (studentObject instanceof Student) {
+            return (((Student) studentObject).getNrIndeksu()) == this.getNrIndeksu();
+        }
+        return false;
+    }
 }

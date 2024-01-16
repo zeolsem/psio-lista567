@@ -24,11 +24,11 @@ public class Uczelnia {
     }
 
     public ArrayList<Dane> getListaOsob() {
-        return listaOsob;
+        return new ArrayList<>(new HashSet<>(listaOsob));
     }
 
     public void setListaOsob(ArrayList<Dane> dlistaOsob) {
-        listaOsob = dlistaOsob;
+        listaOsob = new ArrayList<>(new HashSet<>(dlistaOsob));
     }
     public ArrayList<Dane> getListaKursow() {
         return listaKursow;
@@ -69,27 +69,5 @@ public class Uczelnia {
         for (Dane kurs : listaKursow) {
             System.out.println(kurs);
         }
-    }
-
-    public static void usunDuplikaty() {
-        HashSet<Integer> indexy = new HashSet<>();
-        HashSet<String> peselePracownikow = new HashSet<>();
-        ArrayList<Dane> unikatoweOsoby = new ArrayList<>();
-
-        for (Dane osoba : uczelnia.listaOsob) {
-            if (osoba instanceof Student) {
-                if (indexy.add(((Student) osoba).getNrIndeksu())) {
-                    unikatoweOsoby.add(osoba);
-                }
-            } else if (osoba instanceof PracownikUczelni) {
-                if (peselePracownikow.add(((PracownikUczelni) osoba).getPesel())) {
-                    unikatoweOsoby.add(osoba);
-                }
-            } else {
-                unikatoweOsoby.add(osoba);
-            }
-        }
-
-        uczelnia.setListaOsob(unikatoweOsoby);
     }
 }

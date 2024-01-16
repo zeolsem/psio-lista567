@@ -10,6 +10,8 @@ import wyszukiwanie.Wyszukiwarka;
 
 import java.io.IOError;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Scanner;
 
 public class InputLoop {
@@ -246,7 +248,7 @@ public class InputLoop {
                     break;
                 case 9:
                     System.out.println("Usuwanie duplikatow z bazy danych");
-                    uczelnia.usunDuplikaty();
+                    uczelnia.setListaOsob(uczelnia.getListaOsob());
                     break;
                 case 10:
                     System.out.println("Usuwanie wpisow z bazy danych");
