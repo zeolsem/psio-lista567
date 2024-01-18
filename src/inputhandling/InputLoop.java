@@ -1,6 +1,7 @@
 package inputhandling;
 
 import com.sun.tools.javac.Main;
+import obserwator.EventManager;
 import osoba.*;
 import serializacja.Serializator;
 import sortowanie.Kasownik;
@@ -260,6 +261,7 @@ public class InputLoop {
                 case 8:
                     System.out.println("Zapis do bazy danych");
                     Serializator.serializujUczelnie();
+                    EventManager.getInstance().notify("databaseUpdate", null);
                     break;
                 case 9:
                     System.out.println("Wybierz ktora liste chcesz sortowac");

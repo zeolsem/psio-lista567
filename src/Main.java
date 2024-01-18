@@ -1,25 +1,32 @@
-import osoba.*;
-import osoba.Kurs;
+import obserwator.DatabaseListener;
+import obserwator.EventManager;
 import serializacja.Serializator;
 import sortowanie.Kasownik;
 import sortowanie.Sortownik;
-import uczelnia.GeneratorDanych;
 import uczelnia.Uczelnia;
 import wyszukiwanie.Wyszukiwarka;
 import inputhandling.InputLoop;
 
-import java.util.Random;
+import java.util.List;
 
 public class Main {
 
     public static void main(String[] args) {
+        // init
+        EventManager eventManager = EventManager.getInstance();
         Uczelnia uczelnia = Uczelnia.getInstance();
         Wyszukiwarka wyszukiwarka = Wyszukiwarka.getInstance();
         Sortownik sortownik = new Sortownik();
         Kasownik kasownik = new Kasownik();
+        // events
+        DatabaseListener databaseListener = new DatabaseListener();
+        eventManager.listeners.put("databaseUpdate", List.of(databaseListener));
 
+        //loading database
         Serializator.deserializujListeDanych("lista_kursow.txt");
         Serializator.deserializujListeDanych("lista_osob.txt");
+        databaseListener.loadDatabaseAlterations();
+
 //
 //        Serializator.serializujUczelnie();
 
@@ -49,5 +56,9 @@ public class Main {
 //        // sortuj kursy po ects
 //        sortownik.sortujListeKursow(uczelnia.getListaKursow(), "ects");
 //        uczelnia.getListaKursow().forEach(System.out::println);
+        System.out.println("W tej sesji aktualizowales baze danych " + databaseListener.getNewDatabaseAlterations() + " razy.");
+        int totalDBAlterations = databaseListener.getNewDatabaseAlterations() + databaseListener.getOldDatabaseAlterations();
+        System.out.println("Lacznie baza danych byla aktualizowana " + totalDBAlterations + " razy.");
+        databaseListener.saveDatabaseAlterations();
     }
 }
