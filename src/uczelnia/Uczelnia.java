@@ -24,11 +24,11 @@ public class Uczelnia {
     }
 
     public ArrayList<Dane> getListaOsob() {
-        return new ArrayList<>(new HashSet<>(listaOsob));
+        return listaOsob;
     }
 
     public void setListaOsob(ArrayList<Dane> dlistaOsob) {
-        listaOsob = new ArrayList<>(new HashSet<>(dlistaOsob));
+        listaOsob = dlistaOsob;
     }
     public ArrayList<Dane> getListaKursow() {
         return listaKursow;

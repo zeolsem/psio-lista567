@@ -105,7 +105,6 @@ public class InputLoop {
             default:
                 System.out.println("Nuh UHH");
         }
-
     }
 
     public void wyszukajPracownikowPoDanych() {
@@ -217,14 +216,17 @@ public class InputLoop {
                 case 2:
                     System.out.println("Wyszukiwanie studentow po danych");
                     wyszukajStudentowPoDanych();
+                    scanner.nextLine();
                     break;
                 case 3:
                     System.out.println("Wyszukiwanie pracownikow po danych");
                     wyszukajPracownikowPoDanych();
+                    scanner.nextLine();
                     break;
                 case 4:
                     System.out.println("Wyszukiwanie kursow po danych");
                     wyszukajKursyPoDanych();
+                    scanner.nextLine();
                     break;
                 case 5:
                     System.out.println("Do widzenia slepa Gienia");
@@ -271,17 +273,18 @@ public class InputLoop {
                     String choice3;
                     switch (choice) {
                         case 1:
-                            System.out.println("Podaj kryterium: 'ects', 'prowadzacy_nazwisko'");
+                            System.out.println("Podaj kryterium: 'imie', 'nazwisko_i_imie', 'nazwisko_i_wiek'");
                             choice3 = safeScanString();
-                            sortownik.sortujListeKursow(uczelnia.getListaKursow(), choice3);
+                            sortownik.sortujListeOsob(uczelnia.getListaOsob(), choice3);
                             break;
                         case 2:
-                            System.out.println("Podaj kryterium: 'imie', 'nazwisko_i_imie', 'nazwisko_i_wiek'");
+                            System.out.println("Podaj kryterium: 'ects', 'prowadzacy_nazwisko'");
                             choice3 = safeScanString();
                             sortownik.sortujListeKursow(uczelnia.getListaKursow(), choice3);
                             break;
                     }
                     System.out.println("Lista posortowana.");
+                    scanner.nextLine();
                     break;
                 case 10:
                     System.out.println("Usuwanie wpisow z bazy danych");

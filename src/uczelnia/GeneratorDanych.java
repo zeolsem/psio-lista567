@@ -123,7 +123,7 @@ public class GeneratorDanych {
             if (new Random().nextBoolean()) {
                 uczelnia.dodajOsobe(generujPracownik("administracyjny"));
             } else {
-                uczelnia.dodajOsobe(generujPracownik("dydaktyczno-badawczy"));
+                uczelnia.dodajOsobe(generujPracownik("dydaktycznoBadawczy"));
             }
         }
     }
@@ -155,6 +155,7 @@ public class GeneratorDanych {
                 pracownik = new PracownikBadawczoDydaktyczny(imie, nazwisko, pesel, wiek, plec, stanowisko, stazPracy, pensja, liczbaPublikacji);
                 break;
             default:
+                System.out.println("FAtalny blad");
                 pracownik = null;
         }
 
