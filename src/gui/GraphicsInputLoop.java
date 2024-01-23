@@ -34,7 +34,7 @@ public class GraphicsInputLoop {
     }
 
     public static void createAndShowGUI() {
-        frame = new JFrame("Centered Options Demo");
+        frame = new JFrame("Projekt Uczelnia");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         Option[] options = {
@@ -643,17 +643,14 @@ public class GraphicsInputLoop {
                             showListDialog(pracownicyDydaktycznoBadawczy, parent);
                             break;
                         default:
-                            // User canceled or closed the dialog
                             System.out.println("Search canceled.");
                     }
                     break;
                 case 2:
-                    // Search for courses
                     ArrayList<Dane> kursy = Wyszukiwarka.wyszukajPoKlasie(Kurs.class, uczelnia.getListaKursow());
                     showListDialog(kursy, parent);
                     break;
                 default:
-                    // User canceled or closed the dialog
                     System.out.println("Search canceled.");
             }
         }
