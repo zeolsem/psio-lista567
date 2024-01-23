@@ -1,3 +1,4 @@
+import obserwator.DataEntryAmountListener;
 import obserwator.DatabaseListener;
 import obserwator.EventManager;
 import osoba.Osoba;
@@ -22,7 +23,10 @@ public class Main {
         Kasownik kasownik = new Kasownik();
         // events
         DatabaseListener databaseListener = new DatabaseListener();
-        eventManager.listeners.put("databaseUpdate", List.of(databaseListener));
+        DataEntryAmountListener dataEntryAmountListener = new DataEntryAmountListener();
+        eventManager.subscribe("databaseUpdate", databaseListener);
+        eventManager.subscribe("databaseUpdate", dataEntryAmountListener);
+
 
         //loading database
         Serializator.deserializujListeDanych("lista_kursow.txt");
@@ -32,12 +36,16 @@ public class Main {
         SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
-//                GraphicsInputLoop.loop();
 //                InputLoop inputLoop = new InputLoop();
 //                inputLoop.loop();
                 GraphicsInputLoop.createAndShowGUI();
             }
         });
+//        System.out.println("W tej sesji aktualizowales baze danych " + databaseListener.getNewDatabaseAlterations() + " razy.");
+//        int totalDBAlterations = databaseListener.getNewDatabaseAlterations() + databaseListener.getOldDatabaseAlterations();
+//        System.out.println("Lacznie baza danych byla aktualizowana " + totalDBAlterations + " razy.");
+//        databaseListener.saveDatabaseAlterations();
+
     }
 }
 

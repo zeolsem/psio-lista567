@@ -1,6 +1,8 @@
 package gui;
 
 import java.util.ArrayList;
+
+import obserwator.EventManager;
 import osoba.*;
 import sortowanie.Kasownik;
 import sortowanie.Sortownik;
@@ -18,6 +20,18 @@ import static uczelnia.GeneratorDanych.generujPracownik;
 public class GraphicsInputLoop {
     static Uczelnia uczelnia = Uczelnia.getInstance();
     static JFrame frame;
+    static GraphicsInputLoop instance;
+    static JPanel dataPanel;
+
+    private GraphicsInputLoop() {
+    }
+
+    public static GraphicsInputLoop getInstance() {
+        if (instance == null) {
+            instance = new GraphicsInputLoop();
+        }
+        return instance;
+    }
 
     public static void createAndShowGUI() {
         frame = new JFrame("Centered Options Demo");
@@ -49,6 +63,19 @@ public class GraphicsInputLoop {
 
         JPanel mainPanel = new JPanel();
         mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
+        JPanel titlePanel = new JPanel();
+        JLabel titleLabel = new JLabel("Witaj w projekcie uczelnia!");
+
+
+        dataPanel = new JPanel(new GridLayout(1, 3));
+        EventManager.getInstance().notify("databaseUpdate", null);
+
+        titleLabel.setFont(new Font("Arial", Font.BOLD, 24));
+        titlePanel.add(titleLabel);
+
+        mainPanel.add(dataPanel);
+
+        mainPanel.add(titlePanel);
 
         for (Option option : options) {
             JPanel optionPanel = createOptionPanel(option);
@@ -63,12 +90,33 @@ public class GraphicsInputLoop {
         frame.setVisible(true);
     }
 
+    private static void updateDataPanel(int studenci, int pracownicy, int kursy) {
+        for (Component component : dataPanel.getComponents()) {
+            dataPanel.remove(component);
+        }
+
+        JPanel leftPanel = new JPanel();
+        leftPanel.add(OptionImpl.myLabel(String.format("Liczba studentow: %d", studenci)));
+
+        JPanel centerPanel = new JPanel();
+        centerPanel.add(OptionImpl.myLabel(String.format("Liczba pracownikow: %d", pracownicy)));
+
+        JPanel rightPanel = new JPanel();
+        rightPanel.add(OptionImpl.myLabel(String.format("Liczba kursow: %d", kursy)));
+
+        dataPanel.add(leftPanel);
+        dataPanel.add(centerPanel);
+        dataPanel.add(rightPanel);
+
+    }
+
     private static JPanel createOptionPanel(Option option) {
         JPanel optionPanel = new JPanel();
         optionPanel.setLayout(new BorderLayout());
         optionPanel.setBorder(BorderFactory.createLineBorder(Color.BLACK, 2));
 
         JButton optionButton = new JButton(option.getText());
+        optionButton.setFont(new Font("Arial", Font.BOLD, 24));
         optionButton.addActionListener(e -> {
             option.performAction();
             option.showDialog(optionButton);
@@ -76,6 +124,12 @@ public class GraphicsInputLoop {
 
         optionPanel.add(optionButton, BorderLayout.CENTER);
         return optionPanel;
+    }
+
+    public static void updateDataEntryAmount(int listaStudentow, int listaPracownikow, int listaKursow) {
+        updateDataPanel(listaStudentow, listaPracownikow, listaKursow);
+        frame.revalidate();
+        frame.repaint();
     }
 
     interface Option {
@@ -119,8 +173,13 @@ public class GraphicsInputLoop {
             return new JLabel("Default Component for " + getText());
         }
 
+        public static JLabel myLabel(String message) {
+            JLabel label = new JLabel(message);
+            label.setFont(new Font("Arial", Font.BOLD, 24));
+            return label;
+        }
         private static void showDialog(Component parent, String title, String message) {
-            JOptionPane.showMessageDialog(parent, message, title, JOptionPane.INFORMATION_MESSAGE);
+            JOptionPane.showMessageDialog(parent, myLabel(message), title, JOptionPane.INFORMATION_MESSAGE);
         }
     }
 
@@ -136,7 +195,7 @@ public class GraphicsInputLoop {
             // Show the option dialog
             int choice = JOptionPane.showOptionDialog(
                     parent,
-                    "Wybierz co chcesz sortowac:",
+                    myLabel("Wybierz co chcesz sortowac:"),
                     "Wybor klas",
                     JOptionPane.DEFAULT_OPTION,
                     JOptionPane.QUESTION_MESSAGE,
@@ -190,7 +249,7 @@ public class GraphicsInputLoop {
             // Show the option dialog
             int choice = JOptionPane.showOptionDialog(
                     parent,
-                    "Wybierz co chcesz usunac:",
+                    myLabel("Wybierz co chcesz usunac:"),
                     "Wybor klas",
                     JOptionPane.DEFAULT_OPTION,
                     JOptionPane.QUESTION_MESSAGE,
@@ -214,6 +273,7 @@ public class GraphicsInputLoop {
                 default:
                     System.out.println("hUH");
             }
+            EventManager.getInstance().notify("databaseUpdate", null);
         }
     }
 
@@ -239,34 +299,36 @@ public class GraphicsInputLoop {
 
             // Perform action based on the user's choice
             int choice2;
+            int usunieci = 0;
             switch (choice) {
                 case 0:
                     String[] opcje = new String[]{"imie", "nazwisko", "index", "rokStudiow"};
                     choice2 = JOptionPane.showOptionDialog(
                             parent,
-                            "Wybierz typ danej:",
+                            myLabel("Wybierz typ danej:"),
                             "Wybor danej",
                             JOptionPane.DEFAULT_OPTION,
                             JOptionPane.QUESTION_MESSAGE,
                             null,
                             opcje,
                             "imie");
+
                     switch (choice2) {
                         case 0:
                             String imie = JOptionPane.showInputDialog(parent, "Podaj imie:");
-                            kasownik.usunStudenta("imie", imie);
+                            usunieci = kasownik.usunStudenta("imie", imie);
                             break;
                         case 1:
                             String nazwisko = JOptionPane.showInputDialog(parent, "Podaj nazwisko:");
-                            kasownik.usunStudenta("nazwisko", nazwisko);
+                            usunieci = kasownik.usunStudenta("nazwisko", nazwisko);
                             break;
                         case 2:
                             String index = JOptionPane.showInputDialog(parent, "Podaj index:");
-                            kasownik.usunStudenta("index", index);
+                            usunieci = kasownik.usunStudenta("index", index);
                             break;
                         case 3:
                             String rok = JOptionPane.showInputDialog(parent, "Podaj rok:");
-                            kasownik.usunStudenta("rokStudiow", rok);
+                            usunieci = kasownik.usunStudenta("rokStudiow", rok);
                             break;
                         default:
                     }
@@ -286,19 +348,19 @@ public class GraphicsInputLoop {
                     switch (choice2) {
                         case 0:
                             String imie = JOptionPane.showInputDialog(parent, "Podaj imie:");
-                            kasownik.usunPracownika("imie", imie);
+                            usunieci = kasownik.usunPracownika("imie", imie);
                             break;
                         case 1:
                             String nazwisko = JOptionPane.showInputDialog(parent, "Podaj nazwisko:");
-                            kasownik.usunPracownika("nazwisko", nazwisko);
+                            usunieci = kasownik.usunPracownika("nazwisko", nazwisko);
                             break;
                         case 2:
                             String stazPracy = JOptionPane.showInputDialog(parent, "Podaj staz pracy:");
-                            kasownik.usunPracownika("stazPracy", stazPracy);
+                            usunieci = kasownik.usunPracownika("stazPracy", stazPracy);
                             break;
                         case 3:
                             String stanowisko = JOptionPane.showInputDialog(parent, "Podaj stanowisko:");
-                            kasownik.usunPracownika("stanowisko", stanowisko);
+                            usunieci = kasownik.usunPracownika("stanowisko", stanowisko);
                             break;
                         default:
                             break;
@@ -318,20 +380,22 @@ public class GraphicsInputLoop {
                     switch (choice2) {
                         case 0:
                             String nazwa = JOptionPane.showInputDialog(parent, "Podaj nazwe kursu:");
-                            kasownik.usunKurs("nazwa", nazwa);
+                            usunieci = kasownik.usunKurs("nazwa", nazwa);
                             break;
                         case 1:
                             String ects = JOptionPane.showInputDialog(parent, "Podaj ects:");
-                            kasownik.usunKurs("ects", ects);
+                            usunieci = kasownik.usunKurs("ects", ects);
                             break;
                         case 2:
                             String prowadzacy = JOptionPane.showInputDialog(parent, "Podaj prowadzacego:");
-                            kasownik.usunKurs("prowadzacy", prowadzacy);
+                            usunieci = kasownik.usunKurs("prowadzacy", prowadzacy);
                             break;
                         default:
                     }
                     break;
             }
+            EventManager.getInstance().notify("databaseUpdate", null);
+            JOptionPane.showMessageDialog(null, String.format("usunieto %d wpisow", usunieci), "liczba usunietyvh", JOptionPane.INFORMATION_MESSAGE);
         }
     }
 
@@ -347,7 +411,7 @@ public class GraphicsInputLoop {
            // Show the option dialog
            int choice = JOptionPane.showOptionDialog(
                    parent,
-                   "Wybierz co chcesz generowac:",
+                   myLabel("Wybierz co chcesz generowac:"),
                    "Wybor generacji",
                    JOptionPane.DEFAULT_OPTION,
                    JOptionPane.QUESTION_MESSAGE,
@@ -379,6 +443,7 @@ public class GraphicsInputLoop {
                    // User canceled or closed the dialog
                    System.out.println("Search canceled.");
            }
+           EventManager.getInstance().notify("databaseUpdate", null);
        }
     }
     static class SearchForDataInTable extends OptionImpl {
@@ -393,7 +458,7 @@ public class GraphicsInputLoop {
             // Show the option dialog
             int choice = JOptionPane.showOptionDialog(
                     parent,
-                    "Wyszukaj po danych:",
+                    myLabel("Wyszukaj po klasach:"),
                     "Wybor klas",
                     JOptionPane.DEFAULT_OPTION,
                     JOptionPane.QUESTION_MESSAGE,
@@ -543,7 +608,7 @@ public class GraphicsInputLoop {
             // Show the option dialog
             int choice = JOptionPane.showOptionDialog(
                     parent,
-                    "Wybierz klase:",
+                    myLabel("Wybor klas:"),
                     "Wybor klas",
                     JOptionPane.DEFAULT_OPTION,
                     JOptionPane.QUESTION_MESSAGE,

@@ -7,8 +7,6 @@ import osoba.Student;
 import serializacja.Serializator;
 import uczelnia.Uczelnia;
 
-import java.lang.reflect.Array;
-import java.util.ArrayList;
 import java.util.Iterator;
 
 public class Kasownik {
@@ -17,103 +15,114 @@ public class Kasownik {
         uczelnia = Uczelnia.getInstance();
     }
 
-    public void usunPracownika(String kryterium, String klucz) {
+    public int usunPracownika(String kryterium, String klucz) {
         Iterator<Dane> iterator = uczelnia.getListaOsob().iterator();
+        int usunieci = 0;
         while (iterator.hasNext()) {
             Dane pracownik = iterator.next();
             if (pracownik instanceof PracownikUczelni) {
                 switch (kryterium) {
-                    case "nazwisko":
+                    case "nazwisko" -> {
                         if (((PracownikUczelni) pracownik).getNazwisko().equals(klucz)) {
                             iterator.remove();
+                            usunieci++;
                         }
-                        break;
-                    case "imie":
+                    }
+                    case "imie" -> {
                         if (((PracownikUczelni) pracownik).getImie().equals(klucz)) {
                             iterator.remove();
+                            usunieci++;
                         }
-                        break;
-                    case "stazPracy":
+                    }
+                    case "stazPracy" -> {
                         if (((PracownikUczelni) pracownik).getStazPracy() == Integer.parseInt(klucz)) {
                             iterator.remove();
+                            usunieci++;
                         }
-                        break;
-                    case "stanowisko":
+                    }
+                    case "stanowisko" -> {
                         if (((PracownikUczelni) pracownik).getStanowisko().equals(klucz)) {
                             iterator.remove();
+                            usunieci++;
                         }
-                        break;
-                    default:
-                        System.out.println("Niepoprawne kryterium");
-                        return;
+                    }
+                    default -> System.out.println("Niepoprawne kryterium");
                 }
             }
         }
         Serializator.serializujUczelnie();
+        return usunieci;
     }
 
-    public void usunStudenta(String kryterium, String klucz) {
+    public int usunStudenta(String kryterium, String klucz) {
         Iterator<Dane> iterator = uczelnia.getListaOsob().iterator();
+        int usunieci = 0;
         while (iterator.hasNext()) {
             Dane student = iterator.next();
             if (student instanceof Student) {
                 switch (kryterium) {
-                    case "nazwisko":
+                    case "nazwisko" -> {
                         if (((Student) student).getNazwisko().equals(klucz)) {
                             iterator.remove();
+                            usunieci++;
                         }
-                        break;
-                    case "imie":
+                    }
+                    case "imie" -> {
                         if (((Student) student).getImie().equals(klucz)) {
                             iterator.remove();
+                            usunieci++;
                         }
-                        break;
-                    case "index":
+                    }
+                    case "index" -> {
                         if (((Student) student).getNrIndeksu() == Integer.parseInt(klucz)) {
                             iterator.remove();
+                            usunieci++;
                         }
-                        break;
-                    case "rokStudiow":
+                    }
+                    case "rokStudiow" -> {
                         if (((Student) student).getRokStudiow() == Integer.parseInt(klucz)) {
                             iterator.remove();
+                            usunieci++;
                         }
-                        break;
-                    default:
-                        System.out.println("Niepoprawne kryterium");
-                        return;
+                    }
+                    default -> System.out.println("Niepoprawne kryterium");
                 }
             }
         }
         Serializator.serializujUczelnie();
+        return usunieci;
     }
 
-    public void usunKurs(String kryterium, String klucz) {
+    public int usunKurs(String kryterium, String klucz) {
         Iterator<Dane> iterator = uczelnia.getListaKursow().iterator();
+        int usunieci = 0;
         while (iterator.hasNext()) {
             Dane kurs = iterator.next();
             if (kurs instanceof Kurs) {
                 switch (kryterium) {
-                    case "nazwa":
+                    case "nazwa" -> {
                         if (((Kurs) kurs).getNazwa().equals(klucz)) {
                             iterator.remove();
+                            usunieci++;
                         }
-                        break;
-                    case "prowadzacy":
+                    }
+                    case "prowadzacy" -> {
                         if (((Kurs) kurs).getProwadzacy().getNazwisko().equals(klucz)) {
                             iterator.remove();
+                            usunieci++;
                         }
-                        break;
-                    case "ects":
+                    }
+                    case "ects" -> {
                         if (((Kurs) kurs).getPunktyECTS() == Integer.parseInt(klucz)) {
                             iterator.remove();
+                            usunieci++;
                         }
-                        break;
-                    default:
-                        System.out.println("Niepoprawne kryterium");
-                        return;
+                    }
+                    default -> System.out.println("Niepoprawne kryterium");
                 }
             }
         }
         Serializator.serializujUczelnie();
+        return usunieci;
     }
 }
