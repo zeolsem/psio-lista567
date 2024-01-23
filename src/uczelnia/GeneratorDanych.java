@@ -74,12 +74,14 @@ public class GeneratorDanych {
 
     }
 
+    public static Kurs generujKurs() {
+        return new Kurs(generujTekst("nazwaKursu"), (PracownikBadawczoDydaktyczny) generujPracownik("dydaktycznoBadawczy"), (new Random()).nextInt(1, 5));
+    }
+
     public static void generujKursy(Uczelnia uczelnia, int liczba) {
         Random rand = new Random();
         for (int i = 0; i < liczba; i++) {
-            Kurs kurs_i;
-            kurs_i = new Kurs(generujTekst("nazwaKursu"), (PracownikBadawczoDydaktyczny) generujPracownik("dydaktycznoBadawczy"), rand.nextInt(1, 5));
-            uczelnia.dodajKurs(kurs_i);
+            uczelnia.dodajKurs(generujKurs());
         }
     }
 

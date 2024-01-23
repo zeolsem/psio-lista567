@@ -15,7 +15,7 @@ import java.awt.*;
 import java.util.Random;
 import javax.swing.*;
 
-import static uczelnia.GeneratorDanych.generujPracownik;
+import static uczelnia.GeneratorDanych.*;
 
 public class GraphicsInputLoop {
     static Uczelnia uczelnia = Uczelnia.getInstance();
@@ -438,6 +438,9 @@ public class GraphicsInputLoop {
                    break;
                case 2:
                    int liczbaKursow = Integer.parseInt(JOptionPane.showInputDialog(parent, "Podaj liczbe kursow:"));
+                   for (int i = 0; i < liczbaKursow; i++) {
+                       uczelnia.dodajKurs(generujKurs());
+                   }
                    break;
                default:
                    // User canceled or closed the dialog
